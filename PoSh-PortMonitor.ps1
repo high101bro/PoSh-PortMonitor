@@ -52,6 +52,23 @@ param (
     [switch]$NoAudioMessage
 )
 
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName PresentationFramework
+
+[System.Windows.MessageBox]::Show(@"
+PoSh-PortMonitor is a simple GUI used to monitor endpoint ports/services. This is accomplished by making connection attempts to IPs/Ports listed in HostAndPortInfo.csv. This does not validate if a service necessarily up, but is useful to monitor if a port is open/listening/responding, to which one can assume the a correlating serivce is up.
+
+Copyright (C) 2019  Daniel S Komnick 
+https://www.github.com/high101bro/
+
+This program is free software: you can redistribute it and/or modify it under the  terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+A copy of the GNU General Public License (GPLv3) is located at https://www.gnu.org/licenses/.
+"@,'Copy Right / EULA')
+
+
 $ErrorActionPreference = "SilentlyContinue"
 
 [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null

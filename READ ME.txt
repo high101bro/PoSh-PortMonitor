@@ -1,0 +1,7 @@
+WORK IN PROGRESS - Sample Demo
+Tested via PowerShell ISE code execution
+
+PoSh-PortMonitor is a simple GUI thrown together to monitor endpoint ports/services.
+It is done this by making connection attempts to IPs/Ports listed in HostAndPortInfo.csv 
+This does not validate if a service necessarily up, but is useful to monitor if a port
+is open/listening/responding, to which one can assume the a correlating serivce is up.

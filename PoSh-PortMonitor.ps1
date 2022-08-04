@@ -1,4 +1,4 @@
-﻿<#
+﻿    <#
     .SYNOPSIS
         Monitors endpoint services (ports) and alerts if services are down or unresponsive.
 
@@ -48,7 +48,8 @@
 param (
     $CsvInput = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)\HostAndPortInfo.csv",
     $RefreshRate = 5,
-    $Timeout_ms  = 500,
+    $Timeout_ms = 500,
+    $FormScale = 2,
     [switch]$NoAudioMessage
 )
 
@@ -75,9 +76,10 @@ $ErrorActionPreference = "SilentlyContinue"
 $MonitorEndpointsForm = New-Object System.Windows.Forms.Form -Property @{
     Text          = "PoSh-PortMonitor"
     StartPosition = 'CenterScreen'
-    Size          = @{ Width  = 645
-                       Height = 400 }
-    Font          = New-Object System.Drawing.Font("Courier New",11,0,0,0)
+    Width  = $FormScale * 645
+    Height = $FormScale * 400
+    Font          = New-Object System.Drawing.Font("Courier New",($FormScale * 11),0,0,0)
+    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$PSScriptRoot/high101bro.ico")
     Topmost       = $true 
 }
 
@@ -108,9 +110,9 @@ $MonitorEndpointLabel  = New-Object System.Windows.Forms.Label -Property @{
     Text      = "Monitor Endpoints"
     Location  = @{ X = 10
                   Y = 5 }
-    Size      = @{ Width  = 200
-                  Height = 25 }
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Width  = $FormScale * 200
+    Height = $FormScale * 25
+    Font      = New-Object System.Drawing.Font("$Font",($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
 }
 $MonitorEndpointsForm.Controls.Add($MonitorEndpointLabel)
@@ -118,10 +120,10 @@ $MonitorEndpointsForm.Controls.Add($MonitorEndpointLabel)
 $MonitorEndpointStartButton  = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Start Monitoring"
     Location = @{ X = $MonitorEndpointLabel.Location.X
-                  Y = $MonitorEndpointLabel.Location.Y + $MonitorEndpointLabel.Size.Height }
-    Size     = @{ Width  = 206
-                    Height = 25 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                  Y = $MonitorEndpointLabel.Location.Y + $MonitorEndpointLabel.Height }
+    Width  = $FormScale * 206
+    Height = $FormScale * 25
+    Font     = New-Object System.Drawing.Font("$Font",($FormScale * 11),0,0,0)
 }
 CommonButtonSettings -Button $MonitorEndpointStartButton
 $MonitorEndpointStartButton.Add_Click({    
@@ -133,7 +135,7 @@ $MonitorEndpointStartButton.Add_Click({
             $MonitorEndpointsForm.Refresh()
         }
         $MonitorEndpointList = Import-Csv -Path $CsvInput
-        $MonitorEndpointDownPosition = $MonitorEndpointStartButton.Location.Y + $MonitorEndpointStartButton.Size.Height
+        $MonitorEndpointDownPosition = $MonitorEndpointStartButton.Location.Y + $MonitorEndpointStartButton.Height
         $count = 0
         foreach ($Endpoint in $MonitorEndpointList) {
             $MonitorEndpointDownPosition += 5
@@ -144,8 +146,8 @@ $MonitorEndpointStartButton.Add_Click({
             `$MonitorEndpointAddedStatus$($count)TextBox = New-Object System.Windows.Forms.TextBox -Property @{
                 Location  = @{ X = 10
                                Y = `$MonitorEndpointDownPosition}
-                Size      = @{ Width  = 20
-                               Height = 25 }
+                Width  = `$FormScale * 20
+                Height = `$FormScale * 25
                 ReadOnly  = `$true
                 BackColor = "`$(`$Endpoint.Status)"
             }
@@ -155,10 +157,10 @@ $MonitorEndpointStartButton.Add_Click({
             `$MonitorEndpointsForm.Controls.Remove(`$MonitorEndpointAddedIPAddress$($count)TextBox)   
             `$MonitorEndpointAddedIPAddress$($count)TextBox = New-Object System.Windows.Forms.TextBox -Property @{
                 Text      = "`$(`$Endpoint.Endpoint)"
-                Location  = @{ X = `$MonitorEndpointAddedStatus$($count)TextBox.Location.X + `$MonitorEndpointAddedStatus$($count)TextBox.Size.Width + 5
+                Location  = @{ X = `$MonitorEndpointAddedStatus$($count)TextBox.Location.X + `$MonitorEndpointAddedStatus$($count)TextBox.Width + 5
                                Y = `$MonitorEndpointAddedStatus$($count)TextBox.Location.Y }
-                Size      = @{ Width  = 125
-                               Height = 25 }
+                Width  = `$FormScale * 125
+                Height = `$FormScale * 25
                 ReadOnly  = `$true
                 BackColor = 'White'
             }
@@ -168,10 +170,10 @@ $MonitorEndpointStartButton.Add_Click({
             `$MonitorEndpointsForm.Controls.Remove(`$MonitorEndpointAddedPort$($count)TextBox)  
             `$MonitorEndpointAddedPort$($count)TextBox = New-Object System.Windows.Forms.TextBox -Property @{
                 Text      = "`$(`$Endpoint.Port)"
-                Location  = @{ X = `$MonitorEndpointAddedIPAddress$($count)TextBox.Location.X + `$MonitorEndpointAddedIPAddress$($count)TextBox.Size.Width + 5
+                Location  = @{ X = `$MonitorEndpointAddedIPAddress$($count)TextBox.Location.X + `$MonitorEndpointAddedIPAddress$($count)TextBox.Width + 5
                                Y = `$MonitorEndpointAddedIPAddress$($count)TextBox.Location.Y }
-                Size      = @{ Width  = 50
-                               Height = 25 }
+                Width  = `$FormScale * 50
+                Height = `$FormScale * 25
                 ReadOnly  = `$true
                 BackColor = 'White'
             }
@@ -181,10 +183,10 @@ $MonitorEndpointStartButton.Add_Click({
             `$MonitorEndpointsForm.Controls.Remove(`$MonitorEndpointAddedDescription$($count)TextBox)    
             `$MonitorEndpointAddedDescription$($count)TextBox = New-Object System.Windows.Forms.TextBox -Property @{
                 Text      = "`$(`$Endpoint.Description)"
-                Location  = @{ X = `$MonitorEndpointAddedPort$($count)TextBox.Location.X + `$MonitorEndpointAddedPort$($count)TextBox.Size.Width + 5
+                Location  = @{ X = `$MonitorEndpointAddedPort$($count)TextBox.Location.X + `$MonitorEndpointAddedPort$($count)TextBox.Width + 5
                                Y = `$MonitorEndpointAddedPort$($count)TextBox.Location.Y }
-                Size      = @{ Width  = 400
-                               Height = 25 }
+                Width  = `$FormScale * 400
+                Height = `$FormScale * 25
                 ReadOnly  = `$true
                 BackColor = 'White'
             }
@@ -192,7 +194,7 @@ $MonitorEndpointStartButton.Add_Click({
 "@
 
             Invoke-Expression @"
-            `$MonitorEndpointDownPosition += `$MonitorEndpointAddedStatus$($count)TextBox.Size.Height
+            `$MonitorEndpointDownPosition += `$MonitorEndpointAddedStatus$($count)TextBox.Height
 "@
         }
         $MonitorEndpointsForm.Refresh()
@@ -232,7 +234,7 @@ $MonitorEndpointStartButton.Add_Click({
 })
 $MonitorEndpointsForm.Controls.Add($MonitorEndpointStartButton)
                         
-$MonitorEndpointDownPosition = $MonitorEndpointStartButton.Location.Y + $MonitorEndpointStartButton.Size.Height
+$MonitorEndpointDownPosition = $MonitorEndpointStartButton.Location.Y + $MonitorEndpointStartButton.Height
 $count = 0
 foreach ($Endpoint in $MonitorEndpointList) {
     $MonitorEndpointDownPosition += 5
@@ -242,8 +244,8 @@ foreach ($Endpoint in $MonitorEndpointList) {
     `$MonitorEndpointAddedStatus$($count)TextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location  = @{ X = 10
                        Y = `$MonitorEndpointDownPosition}
-        Size      = @{ Width  = 20
-                       Height = 25 }
+        Width  = `$FormScale * 20
+        Height = `$FormScale * 25
         ReadOnly  = `$true
         BackColor = "`$(`$Endpoint.Status)"
     }
@@ -252,10 +254,10 @@ foreach ($Endpoint in $MonitorEndpointList) {
     Invoke-Expression @"
     `$MonitorEndpointAddedIPAddress$($count)TextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Text      = "`$(`$Endpoint.Endpoint)"
-        Location  = @{ X = `$MonitorEndpointAddedStatus$($count)TextBox.Location.X + `$MonitorEndpointAddedStatus$($count)TextBox.Size.Width + 5
+        Location  = @{ X = `$MonitorEndpointAddedStatus$($count)TextBox.Location.X + `$MonitorEndpointAddedStatus$($count)TextBox.Width + 5
                        Y = `$MonitorEndpointAddedStatus$($count)TextBox.Location.Y }
-        Size      = @{ Width  = 125
-                       Height = 25 }
+        Width  = `$FormScale * 125
+        Height = `$FormScale * 25
         ReadOnly  = `$true
         BackColor = 'White'
     }
@@ -264,10 +266,10 @@ foreach ($Endpoint in $MonitorEndpointList) {
     Invoke-Expression @"
     `$MonitorEndpointAddedPort$($count)TextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Text      = "`$(`$Endpoint.Port)"
-        Location  = @{ X = `$MonitorEndpointAddedIPAddress$($count)TextBox.Location.X + `$MonitorEndpointAddedIPAddress$($count)TextBox.Size.Width + 5
+        Location  = @{ X = `$MonitorEndpointAddedIPAddress$($count)TextBox.Location.X + `$MonitorEndpointAddedIPAddress$($count)TextBox.Width + 5
                        Y = `$MonitorEndpointAddedIPAddress$($count)TextBox.Location.Y }
-        Size      = @{ Width  = 50
-                       Height = 25 }
+        Width  = `$FormScale * 50
+        Height = `$FormScale * 25
         ReadOnly  = `$true
         BackColor = 'White'
     }
@@ -276,10 +278,10 @@ foreach ($Endpoint in $MonitorEndpointList) {
     Invoke-Expression @"
     `$MonitorEndpointAddedDescription$($count)TextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Text      = "`$(`$Endpoint.Description)"
-        Location  = @{ X = `$MonitorEndpointAddedPort$($count)TextBox.Location.X + `$MonitorEndpointAddedPort$($count)TextBox.Size.Width + 5
+        Location  = @{ X = `$MonitorEndpointAddedPort$($count)TextBox.Location.X + `$MonitorEndpointAddedPort$($count)TextBox.Width + 5
                        Y = `$MonitorEndpointAddedPort$($count)TextBox.Location.Y }
-        Size      = @{ Width  = 400
-                       Height = 25 }
+        Width  = `$FormScale * 400
+        Height = `$FormScale * 25
         ReadOnly  = `$true
         BackColor = 'White'
     }
@@ -287,7 +289,7 @@ foreach ($Endpoint in $MonitorEndpointList) {
 "@
 
     Invoke-Expression @"
-    `$MonitorEndpointDownPosition += `$MonitorEndpointAddedStatus$($count)TextBox.Size.Height
+    `$MonitorEndpointDownPosition += `$MonitorEndpointAddedStatus$($count)TextBox.Height
 "@
 }
 
